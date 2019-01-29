@@ -2,6 +2,7 @@
 %{
 #include <stdlib.h>
 #include <string.h>
+#include "y.tab.h"
 %}
 
 DIGIT    [0-9]

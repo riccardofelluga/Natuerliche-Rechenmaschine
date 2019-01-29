@@ -3,6 +3,9 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdio.h>
+
+extern int yylex();
+void yyerror(char *msg);
 %}
 
 
@@ -25,8 +28,9 @@
 %start line
 
 %%
-line  : expr '\n'      {printf("Result: %5.2f\n", $1); exit(0);}
-      | ID             {printf("Result: %s\n", $1); exit(0);}
+
+line  : expr '\n'      {printf("Risultato %5.2f\n", $1); exit(0);}
+      | ID             {printf("Risultato %s\n", $1); exit(0);}
       ;
 expr  : expr '+' expr  {$$ = $1 + $3;}
       | expr '-' expr  {$$ = $1 - $3;}
@@ -38,16 +42,15 @@ expr  : expr '+' expr  {$$ = $1 + $3;}
 
 %%
 
-#include "lex.yy.c"
-
-int yyerror (char const *message)
+void yyerror (char *msg)
 {
-  return fprintf (stderr, "%s\n", message);
-  fputs (message, stderr);
+  fprintf (stderr, "%s\n", msg);
+  fputs (msg, stderr);
   fputc ('\n', stderr);
-  return 0;
+  exit(1);
 }
 
 int main(void)
 {
-  return yyparse();}
+  return yyparse();
+}
