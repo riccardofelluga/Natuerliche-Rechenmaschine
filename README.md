@@ -12,7 +12,7 @@ make run
 
 ## How to run long version
 
-In you terminal, paste:
+In your terminal, paste:
 
 ```(bash)
 flex rech-lex.l
