@@ -29,8 +29,8 @@ void yyerror(char *msg);
 
 %%
 
-line  : expr '\n'      {printf("Risultato %5.2f\n", $1); exit(0);}
-      | ID             {printf("Risultato %s\n", $1); exit(0);}
+line  : expr '\n'      {printf("Ergebnis %5.2f\n", $1); exit(0);}
+      | ID             {printf("Ergebnis %s\n", $1); exit(0);}
       ;
 expr  : expr '+' expr  {$$ = $1 + $3;}
       | expr '-' expr  {$$ = $1 - $3;}
