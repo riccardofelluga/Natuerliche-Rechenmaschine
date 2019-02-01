@@ -1,4 +1,4 @@
-# GesprocheneRechner
+# Natürliche Rechenmaschine
 
 Project for the Formal Languages and Compilers course
 
