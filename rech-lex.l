@@ -14,6 +14,7 @@ ID       {LETTER}({LETTER}|{DIGIT})*
 
 %%
 
+[eE][nN][dD][eE]  {return exit_command;}
 [ ]     { /* skip blanks */ }
 
 [iI][fF] {return IF;}
@@ -28,6 +29,5 @@ ID       {LETTER}({LETTER}|{DIGIT})*
 "/"     {return '/';}
 \n      {return '\n';}
   
-
 
 %%

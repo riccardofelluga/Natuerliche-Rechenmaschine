@@ -6,6 +6,7 @@
 
 extern int yylex();
 void yyerror(char *msg);
+void quitting();
 %}
 
 
@@ -14,13 +15,13 @@ void yyerror(char *msg);
        float value;			//attribute of a token of type NUM
        }
 
+%token exit_command
 %token <value>  NUM
 %token IF
 %token <lexeme> ID
 
 %type <value> expr
- /* %type <value> line */
-
+%type <value> line
 %left '-' '+'
 %left '*' '/'
 %right UMINUS
@@ -29,13 +30,15 @@ void yyerror(char *msg);
 
 %%
 
-line  : expr '\n'      {printf("Ergebnis %5.2f\n", $1); exit(0);}
-      | ID             {printf("Ergebnis %s\n", $1); exit(0);}
+line  : exit_command      {quitting();}
+      | expr '\n'         {printf("Das Ergebnis ist %5.2f\n", $1);}
+      | line exit_command {quitting();}
+      | line expr '\n'    {printf("Das Ergebnis ist %5.2f\n", $2);}
       ;
 expr  : expr '+' expr  {$$ = $1 + $3;}
       | expr '-' expr  {$$ = $1 - $3;}
       | expr '*' expr  {$$ = $1 * $3;}
-      | expr '/' expr  {$$ = $1 / $3;}
+      | expr '/' expr  {$$ = $1 / $3;} 
       | NUM            {$$ = $1;}
       | '-' expr       {$$ = -$2;} 
       ;
@@ -48,6 +51,21 @@ void yyerror (char *msg)
   fputs (msg, stderr);
   fputc ('\n', stderr);
   exit(1);
+}
+
+void quitting (){
+  exit(0);
+  /*
+  char answer;
+  printf ("Bist du sicher den Rechner zu verlassen? (press 'y' for yes or 'n' for no)\n");
+  scanf ("%c",&answer);
+  
+  if (answer == 'y'){
+    exit(0);
+  } else if (answer == 'n'){
+    return;
+  }
+  */
 }
 
 int main(void)
