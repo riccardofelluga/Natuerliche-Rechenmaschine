@@ -1,33 +1,16 @@
-%option noyywrap
 %{
-#include <stdlib.h>
-#include <string.h>
 #include "y.tab.h"
+void yyerror (char *s);
+int yylex();
 %}
-
-DIGIT    [0-9]
-NUM      {DIGIT}+(\.{DIGIT}+)?
-
-LETTER   [a-zA-Z]
-ID       {LETTER}({LETTER}|{DIGIT})*
-
+%%
+"print"				   {return print;}
+"exit"				   {return exit_command;}
+[a-zA-Z]			   {yylval.id = yytext[0]; return identifier;}
+[0-9]+                 {yylval.num = atoi(yytext); return number;}
+[ \t\n]                ;
+[-+=;]           	   {return yytext[0];}
+.                      {ECHO; yyerror ("unexpected character");}
 
 %%
-
-[eE][nN][dD][eE]  {return exit_command;}
-[ ]     { /* skip blanks */ }
-
-[iI][fF] {return IF;}
-{NUM}    {yylval.value = atof(yytext);
-          return NUM;}
-{ID}     {yylval.lexeme = strdup(yytext);
-          return ID;}
-
-"+"     {return '+';}
-"-"     {return '-';}
-"*"     {return '*';}
-"/"     {return '/';}
-\n      {return '\n';}
-  
-
-%%
+int yywrap (void) {return 1;}
