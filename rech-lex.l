@@ -4,8 +4,11 @@ void yyerror (char *s);
 int yylex();
 %}
 %%
-
 "fertig"			   {return exit_command;}
+"PLUS"                 {return plus;}
+"MINUS"                {return minus;}
+"MAL"                  {return mal;}
+"DURCH"                {return durch;}
 [a-zA-Z]			   {yylval.id = yytext[0]; return identifier;}
 [0-9]+                 {yylval.num = atoi(yytext); return number;}
 [ \t\n]                ;

@@ -14,11 +14,15 @@ void updateSymbolVal(char symbol, int val);
 
 
 %token exit_command
+%token plus
+%token minus
+%token mal
+%token durch
 %token <num> number
-%token <id> identifier
+%token <id> identifier 
 
-%left '+' '-'
-%left '*' '/'
+%left "PLUS" "MINUS"
+%left "MAL" "DURCH"
 %right UMINUS
 
 %type <num> line exp term 
@@ -26,33 +30,44 @@ void updateSymbolVal(char symbol, int val);
 
 %%
 
-/* descriptions of expected inputs     corresponding actions (in C) */
+/*  descriptions of expected inputs     corresponding actions (in C) */
 
 line    : assignment ';'		{;}
 		| exit_command ';'		{exit(0);}
-		| line identifier ';'	{printf("Der Wert von %c ist %d\n", $1,symbolVal($2));}
+		| line identifier ';'	{printf("Der Wert von \"%c\" ist %d\n", $1 ,symbolVal($2));}
 		| exp ';'				{printf("Das Ergebnis ist %d\n", $1);}
 		| line assignment ';'	{;}
 		| line exp ';'			{printf("Das Ergebnis ist %d\n", $2);}
 		| line exit_command ';'	{exit(0);}
         ;
 
+
 assignment : identifier '=' exp {updateSymbolVal($1,$3);};
 
+
 exp    	: term                  {$$ = $1;}
-       	| exp '+' exp           {$$ = $1 + $3;}
-       	| exp '-' exp           {$$ = $1 - $3;}
-		| exp '*' exp			{$$ = $1 * $3;}
-		| exp '/' exp			{$$ = $1 / $3;}
+       	| exp plus exp	        {$$ = $1 + $3;}
+       	| exp minus exp         {$$ = $1 - $3;}
+		| exp mal exp			{$$ = $1 * $3;}
+		| exp durch exp			{$$ = $1 / $3;}
 		| '(' exp ')'			{$$ = $2;}
 		| '-' exp				{$$ = -$2;}
        	;
+
+
 
 term   	: number                {$$ = $1;}
 		| identifier			{$$ = symbolVal($1);} 
         ;
 
-%%                     /* C code */
+%%                     /* C code  compila*/
+/*
+do this: separa le exp  example:
+R -> E G | E L
+G -> > E 
+L -> < E
+pero spe così puoi avere una cosa che non vogliamo  del tipo 5>5<7>5
+*/
 
 int computeSymbolIndex(char token)
 {
