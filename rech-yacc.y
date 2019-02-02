@@ -70,48 +70,56 @@ E    	: term                  {$$ = $1;}
        	;
 
 
-
 term   	: num                	{$$ = $1;}
 		| VARIABLE			    {$$ = fetch($1)->val;} 
         ;
 
 %%  /* C code here */
-struct Item* fetch(char* identifier){
-	for(int i = 0; i < LIMIT; i++)	{
+struct Item *fetch(char *identifier)
+{
+	for (int i = 0; i < LIMIT; i++)
+	{
 		if (symbolTable[i] != NULL && strcmp(symbolTable[i]->id, identifier) == 0)
 			return symbolTable[i];
 	}
 	return NULL;
 }
 
-void insert(char* identifier, float value){
-	if(fetch(identifier) == NULL){
-		struct Item* in = (struct Item*) malloc(sizeof(struct Item));
+void insert(char *identifier, float value)
+{
+	if (fetch(identifier) == NULL)
+	{
+		struct Item *in = (struct Item *)malloc(sizeof(struct Item));
 		in->id = identifier;
 		in->val = value;
 
-		for(int i = 0; i < LIMIT; i++)
+		for (int i = 0; i < LIMIT; i++)
 		{
-			if(symbolTable[i] == NULL){
+			if (symbolTable[i] == NULL)
+			{
 				symbolTable[i] = in;
 				return;
 			}
 		}
-		
-	} else {
+	}
+	else
+	{
 		update(identifier, value);
 	}
 }
 
-void update(char* identifier, float newValue){
-	struct Item* out = fetch(identifier);
-	if (out != NULL){
+void update(char *identifier, float newValue)
+{
+	struct Item *out = fetch(identifier);
+	if (out != NULL)
+	{
 		out->val = newValue;
 	}
 	return;
 }
 
-int main (void) {
+int main (void)
+{
 	return yyparse();
 }
 
