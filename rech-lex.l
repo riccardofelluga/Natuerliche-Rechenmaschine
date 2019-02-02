@@ -9,7 +9,7 @@ int yylex();
 "MINUS"                {return minus;}
 "MAL"                  {return mal;}
 "DURCH"                {return durch;}
-[a-z]+			   	   {yylval.id = yytext; return VARIABLE;}
+[A-Z][a-z]*			   {yylval.id = yytext; return VARIABLE;}
 [0-9]+"."[0-9]*        {yylval.f = atof(yytext); return num;}
 [ \t\n]                ;
 [-+=;*/()]             {return yytext[0];}

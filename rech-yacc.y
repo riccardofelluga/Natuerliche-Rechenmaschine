@@ -60,7 +60,7 @@ line    : A ';'		{;}
 A : VARIABLE '=' E   {printf("%s => %5.2f\n", $1, $3); insert($1, $3);};
 
 
-E    	: term                  {$$ = $1;}
+E    	: term              {$$ = $1;}
        	| E plus E	        {$$ = $1 + $3;}
        	| E minus E         {$$ = $1 - $3;}
 		| E mal E			{$$ = $1 * $3;}
