@@ -1,107 +1,118 @@
 %{
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define LIMIT 50
+
+
+struct Item
+{
+	char* id;
+	float val;
+};
+
+struct Item* symbolTable[LIMIT];
+
+struct Item* fetch(char* identifier);
+void insert(char* identifier, float value);
+void update(char* identifier, float newValue);
 void yyerror (char *s);
 int yylex();
-#include <stdio.h>     /* C declarations used in actions */
-#include <stdlib.h>
-#include <ctype.h>
-int symbols[52];
-int symbolVal(char symbol);
-void updateSymbolVal(char symbol, int val);
+
 %}
 
-%union {int num; char id;}         /* Yacc definitions */
+%union {
+	float f;
+	char* id;
+}         
 %start line
-
 
 %token exit_command
 %token plus
 %token minus
 %token mal
 %token durch
-%token <num> number
-%token <id> identifier 
+%token <f> num
+%token <id> VARIABLE 
 
 %left "PLUS" "MINUS"
 %left "MAL" "DURCH"
 %right UMINUS
 
-%type <num> line exp term 
-%type <id> assignment
+%type <f> line E term 
+%type <id> A
 
 %%
 
-/*  descriptions of expected inputs     corresponding actions (in C) */
+/*  descriptions of Eected inputs     corresponding actions (in C) */
 
-line    : assignment ';'		{;}
+line    : A ';'		{;}
 		| exit_command ';'		{exit(0);}
-		| line identifier ';'	{printf("Der Wert von \"%c\" ist %d\n", $1 ,symbolVal($2));}
-		| exp ';'				{printf("Das Ergebnis ist %d\n", $1);}
-		| line assignment ';'	{;}
-		| line exp ';'			{printf("Das Ergebnis ist %d\n", $2);}
+		| line VARIABLE ';'	    {printf("Der Wert von \"%s\" ist %5.2f\n", $2 , fetch($2)->val);}
+		| E ';'					{printf("Das Ergebnis ist %5.2f\n", $1);}
+		| line A ';'	{;}
+		| line E ';'			{printf("Das Ergebnis ist %5.2f\n", $2);}
 		| line exit_command ';'	{exit(0);}
         ;
 
 
-assignment : identifier '=' exp {updateSymbolVal($1,$3);};
+A : VARIABLE '=' E   {printf("%s => %5.2f\n", $1, $3); insert($1, $3);};
 
 
-exp    	: term                  {$$ = $1;}
-       	| exp plus exp	        {$$ = $1 + $3;}
-       	| exp minus exp         {$$ = $1 - $3;}
-		| exp mal exp			{$$ = $1 * $3;}
-		| exp durch exp			{$$ = $1 / $3;}
-		| '(' exp ')'			{$$ = $2;}
-		| '-' exp				{$$ = -$2;}
+E    	: term                  {$$ = $1;}
+       	| E plus E	        {$$ = $1 + $3;}
+       	| E minus E         {$$ = $1 - $3;}
+		| E mal E			{$$ = $1 * $3;}
+		| E durch E			{$$ = $1 / $3;}
+		| '(' E ')'			{$$ = $2;}
+		| '-' E				{$$ = -$2;}
        	;
 
 
 
-term   	: number                {$$ = $1;}
-		| identifier			{$$ = symbolVal($1);} 
+term   	: num                	{$$ = $1;}
+		| VARIABLE			    {$$ = fetch($1)->val;} 
         ;
 
-%%                     /* C code  compila*/
-/*
-do this: separa le exp  example:
-R -> E G | E L
-G -> > E 
-L -> < E
-pero spe così puoi avere una cosa che non vogliamo  del tipo 5>5<7>5
-*/
-
-int computeSymbolIndex(char token)
-{
-	int idx = -1;
-	if(islower(token)) {
-		idx = token - 'a' + 26;
-	} else if(isupper(token)) {
-		idx = token - 'A';
+%%  /* C code here */
+struct Item* fetch(char* identifier){
+	for(int i = 0; i < LIMIT; i++)	{
+		if (symbolTable[i] != NULL && strcmp(symbolTable[i]->id, identifier) == 0)
+			return symbolTable[i];
 	}
-	return idx;
-} 
-
-/* returns the value of a given symbol */
-int symbolVal(char symbol)
-{
-	int bucket = computeSymbolIndex(symbol);
-	return symbols[bucket];
+	return NULL;
 }
 
-/* updates the value of a given symbol */
-void updateSymbolVal(char symbol, int val)
-{
-	int bucket = computeSymbolIndex(symbol);
-	symbols[bucket] = val;
+void insert(char* identifier, float value){
+	if(fetch(identifier) == NULL){
+		struct Item* in = (struct Item*) malloc(sizeof(struct Item));
+		in->id = identifier;
+		in->val = value;
+
+		for(int i = 0; i < LIMIT; i++)
+		{
+			if(symbolTable[i] == NULL){
+				symbolTable[i] = in;
+				return;
+			}
+		}
+		
+	} else {
+		update(identifier, value);
+	}
+}
+
+void update(char* identifier, float newValue){
+	struct Item* out = fetch(identifier);
+	if (out != NULL){
+		out->val = newValue;
+	}
+	return;
 }
 
 int main (void) {
-	/* init symbol table */
-	int i;
-	for(i=0; i<52; i++) {
-		symbols[i] = 0;
-	}
-
-	return yyparse ( );
+	return yyparse();
 }
 
 void yyerror (char *s) {fprintf (stderr, "%s\n", s);} 
