@@ -11,10 +11,16 @@ void updateSymbolVal(char symbol, int val);
 
 %union {int num; char id;}         /* Yacc definitions */
 %start line
-%token print
+
+
 %token exit_command
 %token <num> number
 %token <id> identifier
+
+%left '+' '-'
+%left '*' '/'
+%right UMINUS
+
 %type <num> line exp term 
 %type <id> assignment
 
@@ -23,19 +29,25 @@ void updateSymbolVal(char symbol, int val);
 /* descriptions of expected inputs     corresponding actions (in C) */
 
 line    : assignment ';'		{;}
-		| exit_command ';'		{exit(EXIT_SUCCESS);}
-		| print exp ';'			{printf("Printing %d\n", $2);}
+		| exit_command ';'		{exit(0);}
+		| line identifier ';'	{printf("Der Wert von %c ist %d\n", $1,symbolVal($2));}
+		| exp ';'				{printf("Das Ergebnis ist %d\n", $1);}
 		| line assignment ';'	{;}
-		| line print exp ';'	{printf("Printing %d\n", $3);}
-		| line exit_command ';'	{exit(EXIT_SUCCESS);}
+		| line exp ';'			{printf("Das Ergebnis ist %d\n", $2);}
+		| line exit_command ';'	{exit(0);}
         ;
 
-assignment : identifier '=' exp  { updateSymbolVal($1,$3); }
-			;
+assignment : identifier '=' exp {updateSymbolVal($1,$3);};
+
 exp    	: term                  {$$ = $1;}
-       	| exp '+' term          {$$ = $1 + $3;}
-       	| exp '-' term          {$$ = $1 - $3;}
+       	| exp '+' exp           {$$ = $1 + $3;}
+       	| exp '-' exp           {$$ = $1 - $3;}
+		| exp '*' exp			{$$ = $1 * $3;}
+		| exp '/' exp			{$$ = $1 / $3;}
+		| '(' exp ')'			{$$ = $2;}
+		| '-' exp				{$$ = -$2;}
        	;
+
 term   	: number                {$$ = $1;}
 		| identifier			{$$ = symbolVal($1);} 
         ;
