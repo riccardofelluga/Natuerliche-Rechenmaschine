@@ -40,27 +40,24 @@ int yylex();
 %left "MAL" "DURCH"
 %right UMINUS
 
-%type <f> line E term 
-%type <id> A
+%type <f> line E  
+
 
 %%
 
 /*  descriptions of Eected inputs     corresponding actions (in C) */
 
-line    : A ';'		{;}
+line    : VARIABLE '=' E ';'    {printf("%s => %5.2f\n", $1, $3); insert($1, $3);}
 		| exit_command ';'		{exit(0);}
 		| line VARIABLE ';'	    {printf("Der Wert von \"%s\" ist %5.2f\n", $2 , fetch($2)->val);}
 		| E ';'					{printf("Das Ergebnis ist %5.2f\n", $1);}
-		| line A ';'	{;}
-		| line E ';'			{printf("Das Ergebnis ist %5.2f\n", $2);}
+		| line VARIABLE '=' E ';'    {printf("%s => %5.2f\n", $2, $4); insert($2, $4);}
 		| line exit_command ';'	{exit(0);}
+		| line E ';'			{printf("Das Ergebnis ist %5.2f\n", $2);}
         ;
 
-
-A : VARIABLE '=' E   {printf("%s => %5.2f\n", $1, $3); insert($1, $3);};
-
-
-E    	: term              {$$ = $1;}
+E    	: num                	{$$ = $1;}
+		| VARIABLE			    {$$ = fetch($1)->val;} 
        	| E plus E	        {$$ = $1 + $3;}
        	| E minus E         {$$ = $1 - $3;}
 		| E mal E			{$$ = $1 * $3;}
@@ -69,10 +66,6 @@ E    	: term              {$$ = $1;}
 		| '-' E				{$$ = -$2;}
        	;
 
-
-term   	: num                	{$$ = $1;}
-		| VARIABLE			    {$$ = fetch($1)->val;} 
-        ;
 
 %%  /* C code here */
 struct Item *fetch(char *identifier)
