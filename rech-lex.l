@@ -10,9 +10,9 @@ int yylex();
 "MAL"                  {return mal;}
 "DURCH"                {return durch;}
 [A-Z][a-z]*			   {yylval.id = yytext; return VARIABLE;}
-[0-9]+[.]?[0-9]*        {yylval.f = atof(yytext); return num;}
+[0-9]+[.]?[0-9]*       {yylval.f = atof(yytext); return num;}
 [ \t\n]                ;
-[-+=;*/()]             {return yytext[0];}
+[-+=;*/()<>?]           {return yytext[0];}
 .                      {ECHO; yyerror ("unexpected character");}
 
 %%
