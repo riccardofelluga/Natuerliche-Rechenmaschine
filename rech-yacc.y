@@ -59,7 +59,8 @@ line    : VARIABLE '=' E ';'    		{printf("%s => %5.2f\n", $1, $3); insert($1, $
         ;
 
 relop 	: E '>' E 						{if($1 > $3) printf("Ja, %5.2f ist grosser als %5.2f\n",$1,$3); else printf("Nein, %5.2f ist nicht grosser als %5.2f\n",$1,$3);}
-relop 	: E '<' E 						{if($1 < $3) printf("Ja, %5.2f ist kleiner als %5.2f\n",$1,$3); else printf("Nein, %5.2f ist nicht kleiner als %5.2f\n",$1,$3);}
+	 	| E '<' E 						{if($1 < $3) printf("Ja, %5.2f ist kleiner als %5.2f\n",$1,$3); else printf("Nein, %5.2f ist nicht kleiner als %5.2f\n",$1,$3);}
+		;
 
 E    	: num                			{$$ = $1;}
 		| VARIABLE			    		{$$ = fetch($1)->val;} 
