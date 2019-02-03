@@ -5,10 +5,11 @@ int yylex();
 %}
 %%
 "fertig"			   {return exit_command;}
-"PLUS"                 {return plus;}
-"MINUS"                {return minus;}
-"MAL"                  {return mal;}
-"DURCH"                {return durch;}
+"plus"                 {return plus;}
+"minus"                {return minus;}
+"mal"                  {return mal;}
+"durch"                {return durch;}
+"gleich"               {return gleich;}
 [A-Z][a-z]*			   {yylval.id = yytext; return VARIABLE;}
 [0-9]+[.]?[0-9]*       {yylval.f = atof(yytext); return num;}
 [ \t\n]                ;

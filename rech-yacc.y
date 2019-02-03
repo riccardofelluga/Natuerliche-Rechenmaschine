@@ -33,11 +33,12 @@ int yylex();
 %token minus
 %token mal
 %token durch
+%token gleich
 %token <f> num
 %token <id> VARIABLE 
 
-%left "PLUS" "MINUS"
-%left "MAL" "DURCH"
+%left "plus" "minus"
+%left "mal" "durch"
 %right UMINUS
 %type <f> line E 
 %type <id> relop
@@ -47,12 +48,12 @@ int yylex();
 
 /*  descriptions of Eected inputs     corresponding actions (in C) */
 
-line    : VARIABLE '=' E ';'    		{printf("%s => %5.2f\n", $1, $3); insert($1, $3);}
+line    : VARIABLE gleich E ';'    		{printf("%s => %5.2f\n", $1, $3); insert($1, $3);}
 		| exit_command ';'				{exit(0);}
 		| line VARIABLE ';'	    		{printf("Der Wert von \"%s\" ist %5.2f\n", $2 , fetch($2)->val);}
 		| relop '?'						{;}
 		| E ';'							{printf("Das Ergebnis ist %5.2f\n", $1);}
-		| line VARIABLE '=' E ';'    	{printf("%s => %5.2f\n", $2, $4); insert($2, $4);}
+		| line VARIABLE gleich E ';'    	{printf("%s => %5.2f\n", $2, $4); insert($2, $4);}
 		| line exit_command ';'			{exit(0);}
 		| line relop '?'				{;}
 		| line E ';'					{printf("Das Ergebnis ist %5.2f\n", $2);}
