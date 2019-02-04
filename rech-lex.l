@@ -12,11 +12,10 @@ int yylex();
 "gleich"               {return gleich;}
 "grosser als"          {return grosser;}
 "kleiner als"          {return kleiner;}
-[A-Z][a-z]*      	   {yylval.id = yytext; return VARIABLE;}
+[A-Z][a-z]*      	   {yylval.id = yytext; printf("%s\n", yytext); return VARIABLE;}
 [0-9]+[.]?[0-9]*       {yylval.f = atof(yytext); return num;}
 [ \t\n]                ;
 [-+=*/()<>?;]          {return yytext[0];}
 .                      {ECHO; yyerror ("unexpected character");}
-
 %%
 int yywrap (void) {return 1;}

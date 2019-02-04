@@ -61,14 +61,14 @@ line    : A ';'    						{;}
 		| line E ';'					{printf("Das Ergebnis ist %5.2f\n", $2);}
         ;
 
-A 		: VARIABLE gleich E				{insert($1, $3);}
+A 		: E gleich VARIABLE				{insert($3, $1);}
 
-relop 	: E grosser E 						{if($1 > $3) printf("Ja, %5.2f ist grosser als %5.2f\n",$1,$3); else printf("Nein, %5.2f ist nicht grosser als %5.2f\n",$1,$3);}
-	 	| E kleiner E 						{if($1 < $3) printf("Ja, %5.2f ist kleiner als %5.2f\n",$1,$3); else printf("Nein, %5.2f ist nicht kleiner als %5.2f\n",$1,$3);}
+relop 	: E grosser E 					{if($1 > $3) printf("Ja, %5.2f ist grosser als %5.2f\n",$1,$3); else printf("Nein, %5.2f ist nicht grosser als %5.2f\n",$1,$3);}
+	 	| E kleiner E 					{if($1 < $3) printf("Ja, %5.2f ist kleiner als %5.2f\n",$1,$3); else printf("Nein, %5.2f ist nicht kleiner als %5.2f\n",$1,$3);}
 		;
 
 E    	: num                			{$$ = $1;}
-		| VARIABLE			    		{$$ = fetch($1)->val;} 
+		| VARIABLE			    		{$$ = fetch($1)->val; printf("%s\n", $1);} 
        	| E plus E	        			{$$ = $1 + $3;}
        	| E minus E         			{$$ = $1 - $3;}
 		| E mal E						{$$ = $1 * $3;}
@@ -84,7 +84,7 @@ struct Item *fetch(char *identifier)
 	for (int i = 0; i < LIMIT; i++)
 	{	
 		if (symbolTable[i] != NULL && strcmp(symbolTable[i]->id, identifier) == 0){
-			printf("FOUND %s at position %d\n", symbolTable[i]->id, i);			
+			//printf("FOUND %s at position %d\n", symbolTable[i]->id, i);			
 			return symbolTable[i];
 		}
 		
@@ -99,14 +99,12 @@ void insert(char *identifier, float value)
 		struct Item *in = (struct Item *)malloc(sizeof(struct Item));
 		in->id = identifier;
 		in->val = value;
-		printf("%f\n", value);
-		printf("%s\n", identifier);
 
 		for (int i = 0; i < LIMIT; i++)
 		{
 			if (symbolTable[i] == NULL)
 			{
-				printf("inserted %s at position %d\n", in->id, i);
+				printf("inserted %s at position %d with value %f\n ", in->id, i, in->val);
 				symbolTable[i] = in;
 				return;
 			}
