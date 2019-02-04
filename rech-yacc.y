@@ -17,7 +17,7 @@ struct Item* symbolTable[LIMIT];
 struct Item* fetch(char* identifier);
 void insert(char* identifier, float value);
 void update(char* identifier, float newValue);
-void yyerror (char *s);
+void yyerror (char* s);
 int yylex();
 
 %}
@@ -79,7 +79,7 @@ E    	: num                			{$$ = $1;}
 
 
 %%  /* C code here */
-struct Item *fetch(char *identifier)
+struct Item* fetch(char* identifier)
 {
 	for (int i = 0; i < LIMIT; i++)
 	{	
@@ -92,11 +92,11 @@ struct Item *fetch(char *identifier)
 	return NULL;
 }
 
-void insert(char *identifier, float value)
+void insert(char* identifier, float value)
 {
 	if (fetch(identifier) == NULL)
 	{
-		struct Item *in = (struct Item *)malloc(sizeof(struct Item));
+		struct Item* in = (struct Item*)malloc(sizeof(struct Item));
 		in->id = identifier;
 		in->val = value;
 
@@ -116,9 +116,9 @@ void insert(char *identifier, float value)
 	}
 }
 
-void update(char *identifier, float newValue)
+void update(char* identifier, float newValue)
 {
-	struct Item *out = fetch(identifier);
+	struct Item* out = fetch(identifier);
 	if (out != NULL)
 	{
 		out->val = newValue;
@@ -131,4 +131,4 @@ int main (void)
 	return yyparse();
 }
 
-void yyerror (char *s) {fprintf (stderr, "%s\n", s);} 
+void yyerror (char* s) {fprintf (stderr, "%s\n", s);} 
