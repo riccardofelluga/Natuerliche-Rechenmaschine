@@ -34,6 +34,8 @@ int yylex();
 %token mal
 %token durch
 %token gleich
+%token grosser
+%token kleiner
 %token <f> num
 %token <id> VARIABLE 
 
@@ -41,26 +43,28 @@ int yylex();
 %left "mal" "durch"
 %right UMINUS
 %type <f> line E 
-%type <id> relop
+%type <id> relop A
 
 
 %%
 
 /*  descriptions of Eected inputs     corresponding actions (in C) */
 
-line    : VARIABLE gleich E ';'    		{printf("%s => %5.2f\n", $1, $3); insert($1, $3);}
+line    : A ';'    						{;}
 		| exit_command ';'				{exit(0);}
 		| line VARIABLE ';'	    		{printf("Der Wert von \"%s\" ist %5.2f\n", $2 , fetch($2)->val);}
 		| relop '?'						{;}
 		| E ';'							{printf("Das Ergebnis ist %5.2f\n", $1);}
-		| line VARIABLE gleich E ';'    	{printf("%s => %5.2f\n", $2, $4); insert($2, $4);}
+		| line A ';'    				{;}
 		| line exit_command ';'			{exit(0);}
 		| line relop '?'				{;}
 		| line E ';'					{printf("Das Ergebnis ist %5.2f\n", $2);}
         ;
 
-relop 	: E '>' E 						{if($1 > $3) printf("Ja, %5.2f ist grosser als %5.2f\n",$1,$3); else printf("Nein, %5.2f ist nicht grosser als %5.2f\n",$1,$3);}
-	 	| E '<' E 						{if($1 < $3) printf("Ja, %5.2f ist kleiner als %5.2f\n",$1,$3); else printf("Nein, %5.2f ist nicht kleiner als %5.2f\n",$1,$3);}
+A 		: VARIABLE gleich E				{insert($1, $3);}
+
+relop 	: E grosser E 						{if($1 > $3) printf("Ja, %5.2f ist grosser als %5.2f\n",$1,$3); else printf("Nein, %5.2f ist nicht grosser als %5.2f\n",$1,$3);}
+	 	| E kleiner E 						{if($1 < $3) printf("Ja, %5.2f ist kleiner als %5.2f\n",$1,$3); else printf("Nein, %5.2f ist nicht kleiner als %5.2f\n",$1,$3);}
 		;
 
 E    	: num                			{$$ = $1;}
@@ -78,9 +82,12 @@ E    	: num                			{$$ = $1;}
 struct Item *fetch(char *identifier)
 {
 	for (int i = 0; i < LIMIT; i++)
-	{
-		if (symbolTable[i] != NULL && strcmp(symbolTable[i]->id, identifier) == 0)
+	{	
+		if (symbolTable[i] != NULL && strcmp(symbolTable[i]->id, identifier) == 0){
+			printf("FOUND %s at position %d\n", symbolTable[i]->id, i);			
 			return symbolTable[i];
+		}
+		
 	}
 	return NULL;
 }
@@ -92,11 +99,14 @@ void insert(char *identifier, float value)
 		struct Item *in = (struct Item *)malloc(sizeof(struct Item));
 		in->id = identifier;
 		in->val = value;
+		printf("%f\n", value);
+		printf("%s\n", identifier);
 
 		for (int i = 0; i < LIMIT; i++)
 		{
 			if (symbolTable[i] == NULL)
 			{
+				printf("inserted %s at position %d\n", in->id, i);
 				symbolTable[i] = in;
 				return;
 			}
