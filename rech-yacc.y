@@ -43,32 +43,31 @@ int yylex();
 %left "mal" "durch"
 %right UMINUS
 %type <f> line E 
-%type <id> relop A
+%type <id> relop
 
 
 %%
 
 /*  descriptions of Eected inputs     corresponding actions (in C) */
 
-line    : A ';'    						{;}
-		| exit_command ';'				{exit(0);}
-		| line VARIABLE ';'	    		{printf("Der Wert von \"%s\" ist %5.2f\n", $2 , fetch($2)->val);}
+line    : exit_command ';'				{exit(0);}
 		| relop '?'						{;}
 		| E ';'							{printf("Das Ergebnis ist %5.2f\n", $1);}
-		| line A ';'    				{;}
+		| line VARIABLE ';'	  		  		{printf("Der Wert von \"%s\" ist %5.2f\n", $2 , fetch($2)->val);}
 		| line exit_command ';'			{exit(0);}
 		| line relop '?'				{;}
 		| line E ';'					{printf("Das Ergebnis ist %5.2f\n", $2);}
         ;
 
-A 		: E gleich VARIABLE				{insert($3, $1);}
+
 
 relop 	: E groesser E 					{if($1 > $3) printf("Ja, %5.2f ist groesser als %5.2f\n",$1,$3); else printf("Nein, %5.2f ist nicht groesser als %5.2f\n",$1,$3);}
 	 	| E kleiner E 					{if($1 < $3) printf("Ja, %5.2f ist kleiner als %5.2f\n",$1,$3); else printf("Nein, %5.2f ist nicht kleiner als %5.2f\n",$1,$3);}
 		;
 
 E    	: num                			{$$ = $1;}
-		| VARIABLE			    		{$$ = fetch($1)->val; printf("%s\n", $1);} 
+		| VARIABLE gleich E				{insert($1, $3);}
+		| VARIABLE			    		{$$ = fetch($1)->val;} 
        	| E plus E	        			{$$ = $1 + $3;}
        	| E minus E         			{$$ = $1 - $3;}
 		| E mal E						{$$ = $1 * $3;}
