@@ -1,9 +1,10 @@
 This file gives input output examples:
 5 plus 5; >> 10
 5 plus -1; >> 4
+5 plus (2 plus 2); >> 9
 10 minus 5; >> 5
 5 mal 5; >> 25
-10 durch 5; >> 2
+10 durch 0.5; >> 20
 6 groesser als 5; >> Ja
 6 kleiner als 5; >> Nein
 fertig; >> exits
