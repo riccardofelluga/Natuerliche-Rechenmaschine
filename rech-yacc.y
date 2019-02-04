@@ -34,7 +34,7 @@ int yylex();
 %token mal
 %token durch
 %token gleich
-%token grosser
+%token groesser
 %token kleiner
 %token <f> num
 %token <id> VARIABLE 
@@ -63,7 +63,7 @@ line    : A ';'    						{;}
 
 A 		: E gleich VARIABLE				{insert($3, $1);}
 
-relop 	: E grosser E 					{if($1 > $3) printf("Ja, %5.2f ist grosser als %5.2f\n",$1,$3); else printf("Nein, %5.2f ist nicht grosser als %5.2f\n",$1,$3);}
+relop 	: E groesser E 					{if($1 > $3) printf("Ja, %5.2f ist groesser als %5.2f\n",$1,$3); else printf("Nein, %5.2f ist nicht groesser als %5.2f\n",$1,$3);}
 	 	| E kleiner E 					{if($1 < $3) printf("Ja, %5.2f ist kleiner als %5.2f\n",$1,$3); else printf("Nein, %5.2f ist nicht kleiner als %5.2f\n",$1,$3);}
 		;
 

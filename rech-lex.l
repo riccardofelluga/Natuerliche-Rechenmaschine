@@ -10,7 +10,7 @@ int yylex();
 "mal"                  {return mal;}
 "durch"                {return durch;}
 "gleich"               {return gleich;}
-"grosser als"          {return grosser;}
+"groesser als"          {return groesser;}
 "kleiner als"          {return kleiner;}
 [A-Z][a-z]*      	   {yylval.id = yytext; printf("%s\n", yytext); return VARIABLE;}
 [0-9]+[.]?[0-9]*       {yylval.f = atof(yytext); return num;}
