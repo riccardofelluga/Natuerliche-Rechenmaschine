@@ -1,15 +1,13 @@
 This file gives input output examples:
-5 plus 5; >> 10
-5 plus -1; >> 4
-5 plus (2 plus 2); >> 9
-10 minus 5; >> 5
-5 mal 5; >> 25
-10 durch 0.5; >> 20
-6 groesser als 5; >> Ja
-6 kleiner als 5; >> Nein
+5 plus 5; >> Das Ergebnis ist 10.00
+5 plus -1; >> Das Ergebnis ist  4.00
+5 plus (2 plus 2); >> Das Ergebnis ist  9.00
+10 minus 5; >> Das Ergebnis ist  5.00
+5 mal 5; >> Das Ergebnis ist 25.00
+10 durch 0.5; >> Das Ergebnis ist 20.00
+6 groesser als 5? >> Ja,  6.00 ist groesser als  5.00
+6 kleiner als 5? >> Nein,  6.00 ist nicht kleiner als  5.00
 fertig; >> exits
 x gleich 5; >> inserted ...
 y gleich 6.7; >> inserted ...
-x; >> 5
-x plus y; >> 11.7
-
+x plus y; >> Das Ergebnis ist 11.70
